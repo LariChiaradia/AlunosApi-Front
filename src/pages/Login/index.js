@@ -48,10 +48,10 @@ export default function Login() {
             </div>
           </section>
           <section className="password-infos">
-            <div>
+            {/* <div>
               <input type="checkbox" />
               <span>Lembrar senha?</span>
-            </div>
+            </div> */}
             <a href="#"> Esqueceu a senha?</a>
           </section>
 

@@ -10,14 +10,14 @@ export default function Alunos(){
             <header>
                 <img src={logoCadastro} alt="Cadastro"className="logo"/>
                 <span>Bem-Vindo(a), <strong>Larissa</strong>!</span>
-                <Link className="button" to="aluno/novo">Novo Aluno</Link>
+                <Link className="button" to="/aluno/novo/0">Novo Aluno</Link>
                 <button type="button">
                     <FiXCircle size={35} color="#17202a"></FiXCircle>
                 </button>
             </header>
             <form>
                 <input type="text" placeholder="Nome" />
-                <button type="button" class="button">
+                <button type="button" className="button">
                     Filtrar aluno por nome (parcial)
                 </button>
             </form>
@@ -27,7 +27,7 @@ export default function Alunos(){
                     <b>Nome: </b>Paulo<br/><br/>
                     <b>Email: </b>paulo@gmail.com<br/><br/>
                     <b>Idade: </b>22<br/><br/>
-                    <button type="button">
+                    <button type="button" >
                         <FiEdit size={25} color="#17202a"></FiEdit>
                     </button>
                     <button type="button">
