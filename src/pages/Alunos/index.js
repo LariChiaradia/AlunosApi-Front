@@ -9,6 +9,8 @@ export default function Alunos(){
 
     const [nome, setNome] = useState('');
     const [alunos, setAlunos] = useState([]);
+    const [searchInput, setSearchInput] = useState('');
+    const [filtro, setFiltro] = useState([]);
 
     const email = localStorage.getItem("email");
     const token = localStorage.getItem("token");
@@ -18,6 +20,20 @@ export default function Alunos(){
     const authorization = {
         headers: {
             Authorization: `Bearer ${token}`
+        }
+    }
+
+    const searchAlunos = (searchValue) =>{
+        setSearchInput(searchValue);
+
+        if(searchInput !== ''){
+            const dadosFiltrados = alunos.filter((item)=>{
+                return Object.values(item).join('').toLowerCase().includes(searchInput.toLowerCase())
+            });
+            setFiltro(dadosFiltrados);
+        }
+        else{
+            setFiltro(alunos);
         }
     }
 
@@ -46,6 +62,18 @@ export default function Alunos(){
         }
     }
 
+    async function deleteAluno(id){
+        try {
+            if(window.confirm(`Deseja deletar o(a) aluno(a) ${id}  ?`))
+            {
+                await api.delete(`api/Alunos/${id}`, authorization);
+                setAlunos(alunos.filter(aluno => aluno.id !== id));
+            }
+        } catch (error) {
+            alert("Não foi possível excluir o aluno" + error)
+        }
+    }
+
     return(
         <div className="aluno-container">
             <header>
@@ -57,14 +85,16 @@ export default function Alunos(){
                 </button>
             </header>
             <form>
-                <input type="text" placeholder="Nome" />
-                <button type="button" className="button">
-                    Filtrar aluno por nome (parcial)
-                </button>
+                <input 
+                type="text" 
+                placeholder="Nome" 
+                onChange={(e)=> searchAlunos(e.target.value)}
+                />
             </form>
             <h1>Relação de Alunos</h1>
+            {searchInput.length > 1 ? (
             <ul>
-                {alunos.map(({alunoId, nome, email, idade})=>
+                {filtro.map(({alunoId, nome, email, idade})=> (
                  <li key={alunoId}>
                     <b>Nome: </b>{nome}<br/><br/>
                     <b>Email: </b>{email}<br/><br/>
@@ -77,9 +107,26 @@ export default function Alunos(){
                     <FiUserX size={25} color="#17202a"></FiUserX>
                     </button>
                 </li>
-                )}
-
+                ))}
             </ul>
+            ) : (
+                <ul>
+                {alunos.map(({alunoId, nome, email, idade})=> (
+                 <li key={alunoId}>
+                    <b>Nome: </b>{nome}<br/><br/>
+                    <b>Email: </b>{email}<br/><br/>
+                    <b>Idade: </b>{idade}<br/><br/>
+
+                    <button onClick={()=> editAluno(alunoId)} type="button" >
+                    <FiEdit size={25} color="#17202a"></FiEdit>
+                    </button>
+                    <button onClick={()=> deleteAluno(alunoId)} type="button">
+                    <FiUserX size={25} color="#17202a"></FiUserX>
+                    </button>
+                </li>
+                ))}
+            </ul>
+            )}
         </div>
     );
 }
