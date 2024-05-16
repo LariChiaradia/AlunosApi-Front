@@ -1,5 +1,5 @@
 import {React, useState, useEffect} from "react";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import "./styles.css";
 import api from '../../services/api';
 import logoCadastro from "../../assets/Cadastro.png"
@@ -23,7 +23,7 @@ export default function Alunos(){
 
     useEffect(()=> {
         api.get("api/Alunos", authorization).then(
-            response=>{setAlunos(response.data);       
+            response=>{setAlunos(response.data);      
             }, token)
     });
 
@@ -38,12 +38,20 @@ export default function Alunos(){
         }
     }
 
+    async function editAluno(id){
+        try {
+            navigate(`/aluno/novo/${id}`)
+        } catch (error) {
+            alert("Não foi possível editar o aluno");
+        }
+    }
+
     return(
         <div className="aluno-container">
             <header>
                 <img src={logoCadastro} alt="Cadastro"className="logo"/>
                 <span>Bem-Vindo(a), <strong>{email}</strong>!</span>
-                <Link className="button" to="/aluno/novo/0">Novo Aluno</Link>
+                <Link className="button" to={`/aluno/novo/0`}>Novo Aluno</Link>
                 <button onClick={logout} type="button">
                     <FiXCircle size={35} color="#17202a"></FiXCircle>
                 </button>
@@ -56,13 +64,13 @@ export default function Alunos(){
             </form>
             <h1>Relação de Alunos</h1>
             <ul>
-                {alunos.map(aluno=>
-                 <li key={aluno.alunoId}>
-                    <b>Nome: </b>{aluno.nome}<br/><br/>
-                    <b>Email: </b>{aluno.email}<br/><br/>
-                    <b>Idade: </b>{aluno.idade}<br/><br/>
+                {alunos.map(({alunoId, nome, email, idade})=>
+                 <li key={alunoId}>
+                    <b>Nome: </b>{nome}<br/><br/>
+                    <b>Email: </b>{email}<br/><br/>
+                    <b>Idade: </b>{idade}<br/><br/>
 
-                    <button type="button" >
+                    <button onClick={()=> editAluno(alunoId)}type="button" >
                     <FiEdit size={25} color="#17202a"></FiEdit>
                     </button>
                     <button type="button">
