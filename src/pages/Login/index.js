@@ -1,7 +1,35 @@
-import React from "react";
+import {React, useState} from "react";
+import { useNavigate } from 'react-router-dom';
 import "./styles.css";
+import api from '../../services/api';
 
 export default function Login() {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const navigate = useNavigate();
+
+  async function login(event){
+    event.preventDefault();
+
+    const data = {
+      email, password
+    };
+
+    try {
+      const response = await api.post('/api/Account/Login', data);
+      localStorage.setItem('email', email);
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('expiration', response.data.expiration);
+
+      navigate ("/alunos");
+
+    } catch (error) {
+      alert('O login falhou' + error)
+    }
+  }
+
   const showPassword = () => {
     const passwordInput = document.getElementById("field-password");
     const eye = document.getElementById("eye");
@@ -24,15 +52,23 @@ export default function Login() {
         <h1>Cadastro de Alunos</h1>
       </header>
       <main>
-        <form>
+        <form onSubmit={login}>
           <section className="inputs-container">
-            <input type="email" placeholder="exemplo@gmail.com" required />
+            <input 
+            type="email" 
+            placeholder="exemplo@gmail.com" 
+            value={email}
+            onChange={e=>setEmail(e.target.value)} 
+            required 
+            />
             <div className="password-container">
               <input
                 type="password"
                 id="field-password"
                 className="field-password"
                 placeholder="***********"
+                value={password}
+                onChange={e=>setPassword(e.target.value)}
                 required
               />
               <i
